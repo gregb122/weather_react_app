@@ -1,6 +1,7 @@
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import {BrowserRouter as Router, Link, Route, Routes} from 'react-router-dom';
 import {Home} from './pages/Home';
 import {Details} from './pages/Details';
+import {Favorites} from './pages/Favorites';
 import {Provider} from 'react-redux';
 import {store} from './store';
 
@@ -11,12 +12,18 @@ const App = () => {
         <Provider store={store}>
             <Router>
                 <div className="App">
-                    <header>
-                        <h1>Weather App</h1>
+                    <header className="app-header">
+                        <h1 className="app-title">Weather App</h1>
+                        <nav className="app-nav">
+                            <Link to="/">Favorites</Link>
+                            <Link to="/selection">Selection</Link>
+                        </nav>
                     </header>
                     <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/details" element={<Details />} />
+                        <Route path="/" element={<Favorites />} />
+                        <Route path="/favorites" element={<Favorites />} />
+                        <Route path="/selection" element={<Home />} />
+                        <Route path="/details/:cityId" element={<Details />} />
                     </Routes>
                 </div>
             </Router>

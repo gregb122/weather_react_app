@@ -1,0 +1,32 @@
+.favorites {
+    padding: 24px;
+    max-width: 720px;
+    margin: 0 auto;
+    color: #0f172a;
+}
+
+.favorites-header {
+    margin-bottom: 16px;
+}
+
+.favorites-empty {
+    border: 1px dashed #cbd5e1;
+    padding: 16px;
+    border-radius: 12px;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.favorite-button.danger {
+    border-color: #f87171;
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.favorite-button.danger:hover {
+    background: #fecaca;
+    box-shadow: 0 4px 8px rgba(248, 113, 113, 0.2);
+}
