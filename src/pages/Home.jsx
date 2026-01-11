@@ -54,6 +54,27 @@ export function Home() {
                     const isFavorite = favoriteCities.includes(city.id);
                     const weather = MOCK_WEATHER[city.id];
                     const forecastPreview = weather?.forecast?.slice(0, 4) || [];
+                    const metaParts = [];
+                    if (weather?.precipitation) {
+                        const hasAmount =
+                            weather.precipitation.amountMm !== undefined &&
+                            weather.precipitation.amountMm !== null;
+                        const precipitationType =
+                            weather.precipitation.type && weather.precipitation.type !== 'none'
+                                ? ` ${weather.precipitation.type}`
+                                : '';
+                        const precipitationDetail = hasAmount
+                            ? ` (${weather.precipitation.amountMm} mm${precipitationType})`
+                            : precipitationType;
+                        metaParts.push(`💧 ${weather.precipitation.probability}%${precipitationDetail}`);
+                    }
+                    if (weather?.wind) {
+                        const direction = weather.wind.direction ? ` ${weather.wind.direction}` : '';
+                        metaParts.push(`💨 ${weather.wind.speedKph} km/h${direction}`);
+                    }
+                    if (typeof weather?.cloudiness === 'number') {
+                        metaParts.push(`☁️ ${weather.cloudiness}%`);
+                    }
                     return (
                         <li key={city.id} className={`city-row ${isFavorite ? 'is-favorite' : ''}`}>
                             <Link className="city-main-link" to={`/details/${city.id}`}>
@@ -69,10 +90,11 @@ export function Home() {
                                                 <span className="city-condition">
                                                     {weather.icon} {weather.condition}
                                                 </span>
-                                                <span className="city-meta">
-                                                    💧 {weather.precipitation.probability}% · 💨{' '}
-                                                    {weather.wind.speedKph} km/h
-                                                </span>
+                                                {metaParts.length > 0 && (
+                                                    <span className="city-meta">
+                                                        {metaParts.join(' · ')}
+                                                    </span>
+                                                )}
                                             </div>
                                             <div className="forecast-grid">
                                                 {forecastPreview.map(day => (

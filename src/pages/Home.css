@@ -174,6 +174,22 @@
     font-size: 14px;
 }
 
+.forecast-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    color: #475569;
+    font-size: 13px;
+}
+
+.forecast-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
 .city-actions {
     position: absolute;
     top: 12px;
