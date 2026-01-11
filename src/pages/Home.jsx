@@ -1,16 +1,21 @@
-import {useMemo, useState} from 'react';
+import {useMemo, useReducer, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {selectFavoriteCities, toggleFavorite} from '../slices/favoritesSlice';
 import {CITY_LIST} from '../constants/cities';
 import {MOCK_WEATHER} from '../constants/mockWeather';
-import {Link} from 'react-router-dom';
-import {ForecastGrid} from '../components';
+import {ForecastGrid, CityDetailsPanel} from '../components';
 import './Home.css';
 
 export function Home() {
     const dispatch = useDispatch();
     const favoriteCities = useSelector(selectFavoriteCities);
     const [search, setSearch] = useState('');
+    const [expandedCityId, toggleExpanded] = useReducer((state, action) => {
+        if (action.type === 'toggle') {
+            return state === action.cityId ? null : action.cityId;
+        }
+        return state;
+    }, null);
 
     const filteredCities = useMemo(() => {
         const term = search.trim().toLowerCase();
@@ -53,6 +58,7 @@ export function Home() {
                 )}
                 {filteredCities.map(city => {
                     const isFavorite = favoriteCities.includes(city.id);
+                    const isExpanded = expandedCityId === city.id;
                     const weather = MOCK_WEATHER[city.id];
                     const metaParts = [];
                     if (weather?.precipitation) {
@@ -76,8 +82,13 @@ export function Home() {
                         metaParts.push(`☁️ ${weather.cloudiness}%`);
                     }
                     return (
-                        <li key={city.id} className={`city-row ${isFavorite ? 'is-favorite' : ''}`}>
-                            <Link className="city-main-link" to={`/details/${city.id}`}>
+                        <li key={city.id} className={`city-row ${isFavorite ? 'is-favorite' : ''} ${isExpanded ? 'is-open' : ''}`}>
+                            <button
+                                type="button"
+                                className="city-main-link city-toggle"
+                                onClick={() => toggleExpanded({type: 'toggle', cityId: city.id})}
+                                aria-expanded={isExpanded}
+                            >
                                 <div className="city-main">
                                     <div className="city-details">
                                         <span className="city-name">{city.name}</span>
@@ -90,17 +101,17 @@ export function Home() {
                                                 <span className="city-condition">
                                                     {weather.icon} {weather.condition}
                                                 </span>
-                                            {metaParts.length > 0 && (
-                                                <span className="city-meta">
-                                                    {metaParts.join(' · ')}
-                                                </span>
-                                            )}
-                                        </div>
-                                        <ForecastGrid days={weather?.forecast} limit={4} />
-                                    </>
-                                )}
-                            </div>
-                        </Link>
+                                                {metaParts.length > 0 && (
+                                                    <span className="city-meta">
+                                                        {metaParts.join(' · ')}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <ForecastGrid days={weather?.forecast} limit={4} />
+                                        </>
+                                    )}
+                                </div>
+                            </button>
                             <div className="city-actions">
                                 <button
                                     type="button"
@@ -118,6 +129,7 @@ export function Home() {
                                     </span>
                                 </button>
                             </div>
+                            {isExpanded && <CityDetailsPanel weather={weather} />}
                         </li>
                     );
                 })}

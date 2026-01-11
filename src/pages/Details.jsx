@@ -69,7 +69,7 @@ export function Details() {
             </div>
 
             <h2 className="section-title">Forecast</h2>
-            <ForecastGrid days={forecast} limit={6} />
+            <ForecastGrid days={forecast} limit={8} />
         </section>
     );
 }

@@ -1,6 +1,5 @@
 import {BrowserRouter as Router, Link, Route, Routes} from 'react-router-dom';
 import {Home} from './pages/Home';
-import {Details} from './pages/Details';
 import {Favorites} from './pages/Favorites';
 import {Provider} from 'react-redux';
 import {store} from './store';
@@ -23,7 +22,6 @@ const App = () => {
                         <Route path="/" element={<Favorites />} />
                         <Route path="/favorites" element={<Favorites />} />
                         <Route path="/selection" element={<Home />} />
-                        <Route path="/details/:cityId" element={<Details />} />
                     </Routes>
                 </div>
             </Router>

@@ -1,16 +1,22 @@
-import {useMemo} from 'react';
+import {useMemo, useReducer} from 'react';
 import {Link} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import {selectFavoriteCities, toggleFavorite} from '../slices/favoritesSlice';
 import {CITY_LIST} from '../constants/cities';
 import {MOCK_WEATHER} from '../constants/mockWeather';
-import {ForecastGrid} from '../components';
+import {CityDetailsPanel, ForecastGrid} from '../components';
 import './Favorites.css';
 import './Home.css';
 
 export function Favorites() {
     const dispatch = useDispatch();
     const favoriteCities = useSelector(selectFavoriteCities);
+    const [expandedCityId, toggleExpanded] = useReducer((state, action) => {
+        if (action.type === 'toggle') {
+            return state === action.cityId ? null : action.cityId;
+        }
+        return state;
+    }, null);
 
     const selectedCities = useMemo(
         () => CITY_LIST.filter(city => favoriteCities.includes(city.id)),
@@ -42,6 +48,7 @@ export function Favorites() {
                 <ul className="city-list">
                     {selectedCities.map(city => {
                         const weather = MOCK_WEATHER[city.id];
+                        const isExpanded = expandedCityId === city.id;
                         const metaParts = [];
                         if (weather?.precipitation) {
                             const hasAmount =
@@ -66,8 +73,13 @@ export function Favorites() {
                             metaParts.push(`☁️ ${weather.cloudiness}%`);
                         }
                         return (
-                            <li key={city.id} className="city-row is-favorite">
-                                <Link className="city-main-link" to={`/details/${city.id}`}>
+                            <li key={city.id} className={`city-row is-favorite ${isExpanded ? 'is-open' : ''}`}>
+                                <button
+                                    type="button"
+                                    className="city-main-link city-toggle"
+                                    onClick={() => toggleExpanded({type: 'toggle', cityId: city.id})}
+                                    aria-expanded={isExpanded}
+                                >
                                     <div className="city-main">
                                         <div className="city-details">
                                             <span className="city-name">{city.name}</span>
@@ -80,17 +92,17 @@ export function Favorites() {
                                                     <span className="city-condition">
                                                         {weather.icon} {weather.condition}
                                                     </span>
-                                                {metaParts.length > 0 && (
-                                                    <span className="city-meta">
-                                                        {metaParts.join(' · ')}
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <ForecastGrid days={weather?.forecast} limit={4} />
-                                        </>
-                                    )}
-                                </div>
-                            </Link>
+                                                    {metaParts.length > 0 && (
+                                                        <span className="city-meta">
+                                                            {metaParts.join(' · ')}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <ForecastGrid days={weather?.forecast} limit={4} />
+                                            </>
+                                        )}
+                                    </div>
+                                </button>
                                 <div className="city-actions">
                                     <button
                                         type="button"
@@ -107,6 +119,7 @@ export function Favorites() {
                                         </span>
                                     </button>
                                 </div>
+                                {isExpanded && <CityDetailsPanel weather={weather} />}
                             </li>
                         );
                     })}
