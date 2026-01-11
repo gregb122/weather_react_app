@@ -5,12 +5,14 @@ import {selectFavoriteCities, toggleFavorite} from '../slices/favoritesSlice';
 import {CITY_LIST} from '../constants/cities';
 import {MOCK_WEATHER} from '../constants/mockWeather';
 import {CityDetailsPanel, ForecastGrid} from '../components';
+import {formatTemperature} from '../functions';
 import './Favorites.css';
 import './Home.css';
 
 export function Favorites() {
     const dispatch = useDispatch();
     const favoriteCities = useSelector(selectFavoriteCities);
+    const temperatureUnits = useSelector(state => state.weather.temperatureUnits);
     const [expandedCityId, toggleExpanded] = useReducer((state, action) => {
         if (action.type === 'toggle') {
             return state === action.cityId ? null : action.cityId;
@@ -88,7 +90,9 @@ export function Favorites() {
                                         {weather && (
                                             <>
                                                 <div className="city-weather">
-                                                    <span className="city-temp">{weather.currentTempC}°C</span>
+                                                    <span className="city-temp">
+                                                        {formatTemperature(weather.currentTempC, temperatureUnits)}
+                                                    </span>
                                                     <span className="city-condition">
                                                         {weather.icon} {weather.condition}
                                                     </span>
@@ -98,7 +102,11 @@ export function Favorites() {
                                                         </span>
                                                     )}
                                                 </div>
-                                                <ForecastGrid days={weather?.forecast} limit={4} />
+                                                <ForecastGrid
+                                                    days={weather?.forecast}
+                                                    limit={4}
+                                                    temperatureUnits={temperatureUnits}
+                                                />
                                             </>
                                         )}
                                     </div>
@@ -119,7 +127,12 @@ export function Favorites() {
                                         </span>
                                     </button>
                                 </div>
-                                {isExpanded && <CityDetailsPanel weather={weather} />}
+                                {isExpanded && (
+                                    <CityDetailsPanel
+                                        weather={weather}
+                                        temperatureUnits={temperatureUnits}
+                                    />
+                                )}
                             </li>
                         );
                     })}

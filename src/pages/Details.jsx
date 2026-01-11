@@ -1,9 +1,12 @@
 import {Link, useParams} from 'react-router-dom';
+import {useSelector} from 'react-redux';
 import {MOCK_WEATHER} from '../constants/mockWeather';
 import {ForecastGrid} from '../components';
+import {formatTemperature} from '../functions';
 import './Details.css';
 
 export function Details() {
+    const temperatureUnits = useSelector(state => state.weather.temperatureUnits);
     const {cityId} = useParams();
     const weather = cityId ? MOCK_WEATHER[cityId] : null;
 
@@ -38,7 +41,7 @@ export function Details() {
 
             <div className="current-card">
                 <div className="temp">
-                    <span className="temp-value">{currentTempC}°C</span>
+                    <span className="temp-value">{formatTemperature(currentTempC, temperatureUnits)}</span>
                     <span className="temp-label">Current</span>
                 </div>
                 <div className="current-meta">
@@ -69,7 +72,7 @@ export function Details() {
             </div>
 
             <h2 className="section-title">Forecast</h2>
-            <ForecastGrid days={forecast} limit={8} />
+            <ForecastGrid days={forecast} limit={8} temperatureUnits={temperatureUnits} />
         </section>
     );
 }

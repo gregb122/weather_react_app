@@ -1,7 +1,8 @@
+import {formatTemperature, getUnitSuffix} from '../functions';
 import {ForecastGrid} from './ForecastCard';
 import './CityDetailsPanel.css';
 
-export function CityDetailsPanel({weather}) {
+export function CityDetailsPanel({weather, temperatureUnits}) {
     if (!weather) return null;
 
     const {city, country, currentTempC, condition, icon, precipitation, wind, cloudiness, forecast} =
@@ -15,7 +16,9 @@ export function CityDetailsPanel({weather}) {
             </div>
             <div className="inline-current-card">
                 <div className="inline-temp">
-                    <span className="inline-temp-value">{currentTempC}°C</span>
+                    <span className="inline-temp-value">
+                        {formatTemperature(currentTempC, temperatureUnits)}
+                    </span>
                     <span className="inline-temp-label">Current</span>
                 </div>
                 <div className="inline-meta">
@@ -44,11 +47,15 @@ export function CityDetailsPanel({weather}) {
                         <span className="inline-meta-label">Cloudiness</span>
                         <span className="inline-meta-value">{cloudiness}%</span>
                     </div>
+                    <div className="inline-meta-row">
+                        <span className="inline-meta-label">Units</span>
+                        <span className="inline-meta-value">{getUnitSuffix(temperatureUnits)}</span>
+                    </div>
                 </div>
             </div>
 
             <h3 className="inline-section-title">Forecast</h3>
-            <ForecastGrid days={forecast} limit={8} />
+            <ForecastGrid days={forecast} limit={8} temperatureUnits={temperatureUnits} />
         </div>
     );
 }

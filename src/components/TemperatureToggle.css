@@ -1,0 +1,24 @@
+.temp-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #0f172a;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 6px 8px;
+    border-radius: 10px;
+    font-weight: 700;
+}
+
+.temp-toggle-label {
+    color: #e2e8f0;
+}
+
+.temp-toggle-select {
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 6px 8px;
+    font-weight: 700;
+    background: #fff;
+    color: #0f172a;
+}

@@ -4,11 +4,13 @@ import {selectFavoriteCities, toggleFavorite} from '../slices/favoritesSlice';
 import {CITY_LIST} from '../constants/cities';
 import {MOCK_WEATHER} from '../constants/mockWeather';
 import {ForecastGrid, CityDetailsPanel} from '../components';
+import {formatTemperature} from '../functions';
 import './Home.css';
 
 export function Home() {
     const dispatch = useDispatch();
     const favoriteCities = useSelector(selectFavoriteCities);
+    const temperatureUnits = useSelector(state => state.weather.temperatureUnits);
     const [search, setSearch] = useState('');
     const [expandedCityId, toggleExpanded] = useReducer((state, action) => {
         if (action.type === 'toggle') {
@@ -97,7 +99,9 @@ export function Home() {
                                     {weather && (
                                         <>
                                             <div className="city-weather">
-                                                <span className="city-temp">{weather.currentTempC}°C</span>
+                                                <span className="city-temp">
+                                                    {formatTemperature(weather.currentTempC, temperatureUnits)}
+                                                </span>
                                                 <span className="city-condition">
                                                     {weather.icon} {weather.condition}
                                                 </span>
@@ -107,7 +111,11 @@ export function Home() {
                                                     </span>
                                                 )}
                                             </div>
-                                            <ForecastGrid days={weather?.forecast} limit={4} />
+                                            <ForecastGrid
+                                                days={weather?.forecast}
+                                                limit={4}
+                                                temperatureUnits={temperatureUnits}
+                                            />
                                         </>
                                     )}
                                 </div>
@@ -129,7 +137,9 @@ export function Home() {
                                     </span>
                                 </button>
                             </div>
-                            {isExpanded && <CityDetailsPanel weather={weather} />}
+                            {isExpanded && (
+                                <CityDetailsPanel weather={weather} temperatureUnits={temperatureUnits} />
+                            )}
                         </li>
                     );
                 })}

@@ -1,38 +1,41 @@
-/* global process */
 import {combineSlices, configureStore} from '@reduxjs/toolkit';
 import {setupListeners} from '@reduxjs/toolkit/query';
 import logger from 'redux-logger';
 import {weatherSlice} from './slices/weatherSlice';
 import {favoritesSlice} from './slices/favoritesSlice';
+import {TEMPERATURE_UNITS} from './constants/temperatureUnits';
 
-const STORAGE_KEY = 'favoriteCities';
+const STORAGE_KEY = 'weatherAppState';
 
-const loadFavorites = () => {
+const loadState = () => {
     if (typeof localStorage === 'undefined') {
         return undefined;
     }
     try {
         const stored = localStorage.getItem(STORAGE_KEY);
-        const parsed = stored ? JSON.parse(stored) : undefined;
+        if (!stored) return undefined;
+        const parsed = JSON.parse(stored);
+        const preloaded = {};
 
-        if (Array.isArray(parsed)) {
-            return {
-                favorites: {
-                    cities: parsed,
-                },
-            };
+        if (Array.isArray(parsed?.favorites?.cities)) {
+            preloaded.favorites = {cities: parsed.favorites.cities};
         }
+
+        if (TEMPERATURE_UNITS.isValid(parsed?.weather?.temperatureUnits)) {
+            preloaded.weather = {temperatureUnits: parsed.weather.temperatureUnits};
+        }
+
+        return Object.keys(preloaded).length > 0 ? preloaded : undefined;
     } catch {
-        // ignore malformed data and start fresh
+        return undefined;
     }
-    return undefined;
 };
 
 const rootReducer = combineSlices(weatherSlice, favoritesSlice);
 
 const store = configureStore({
     reducer: rootReducer,
-    preloadedState: loadFavorites(),
+    preloadedState: loadState(),
     middleware(getDefaultMiddleware) {
         return process.env.NODE_ENV === 'development'
             ? getDefaultMiddleware().concat(logger)
@@ -42,11 +45,16 @@ const store = configureStore({
 
 if (typeof localStorage !== 'undefined') {
     store.subscribe(() => {
-        const cities = store.getState().favorites?.cities ?? [];
+        const state = store.getState();
         try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(cities));
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify({
+                    favorites: {cities: state.favorites?.cities ?? []},
+                    weather: {temperatureUnits: state.weather?.temperatureUnits},
+                }),
+            );
         } catch {
-            // swallow write errors (e.g., storage quota)
         }
     });
 }
