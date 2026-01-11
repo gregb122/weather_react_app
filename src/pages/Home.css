@@ -135,61 +135,6 @@
     font-size: 14px;
 }
 
-.forecast-grid {
-    display: flex;
-    width: 100%;
-    flex-wrap: wrap;
-    justify-content: space-around;
-}
-
-.forecast-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 12px;
-    width: 120px;
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
-}
-
-.forecast-day {
-    font-weight: 700;
-    color: #0f172a;
-}
-
-.forecast-icon {
-    font-size: 26px;
-    margin: 6px 0;
-}
-
-.forecast-temp {
-    font-weight: 800;
-    color: #0c4a6e;
-}
-
-.forecast-condition {
-    color: #475569;
-    font-size: 14px;
-}
-
-.forecast-meta {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    margin-top: 6px;
-    color: #475569;
-    font-size: 13px;
-}
-
-.forecast-meta-item {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
 .city-actions {
     position: absolute;
     top: 12px;

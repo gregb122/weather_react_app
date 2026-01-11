@@ -1,5 +1,6 @@
 import {Link, useParams} from 'react-router-dom';
 import {MOCK_WEATHER} from '../constants/mockWeather';
+import {ForecastGrid} from '../components';
 import './Details.css';
 
 export function Details() {
@@ -68,43 +69,7 @@ export function Details() {
             </div>
 
             <h2 className="section-title">Forecast</h2>
-            <div className="forecast-grid">
-                {(weather?.forecast?.slice(0, 6) || []).map(day => {
-                    const hasWind = Boolean(day.windDirection);
-                    const hasPrecip =
-                        day.precipitationMm !== undefined && day.precipitationMm !== null;
-                    const hasCloud =
-                        day.cloudCover !== undefined && day.cloudCover !== null;
-                    const showForecastMeta = hasWind || hasPrecip || hasCloud;
-
-                    return (
-                        <div key={day.day} className="forecast-card">
-                            <div className="forecast-day">{day.day}</div>
-                            <div className="forecast-icon">{day.icon}</div>
-                            <div className="forecast-temp">{day.tempC}°C</div>
-                            <div className="forecast-condition">{day.condition}</div>
-                            {showForecastMeta && (
-                                <div className="forecast-meta">
-                                    {hasWind && (
-                                        <span className="forecast-meta-item">💨 {day.windDirection}</span>
-                                    )}
-                                    {hasPrecip && (
-                                        <span className="forecast-meta-item">
-                                            💧 {day.precipitationMm} mm
-                                            {day.precipitationType &&
-                                                day.precipitationType !== 'none' &&
-                                                ` ${day.precipitationType}`}
-                                        </span>
-                                    )}
-                                    {hasCloud && (
-                                        <span className="forecast-meta-item">☁️ {day.cloudCover}%</span>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    );
-                })}
-            </div>
+            <ForecastGrid days={forecast} limit={6} />
         </section>
     );
 }

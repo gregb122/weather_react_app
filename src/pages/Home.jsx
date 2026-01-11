@@ -4,6 +4,7 @@ import {selectFavoriteCities, toggleFavorite} from '../slices/favoritesSlice';
 import {CITY_LIST} from '../constants/cities';
 import {MOCK_WEATHER} from '../constants/mockWeather';
 import {Link} from 'react-router-dom';
+import {ForecastGrid} from '../components';
 import './Home.css';
 
 export function Home() {
@@ -53,7 +54,6 @@ export function Home() {
                 {filteredCities.map(city => {
                     const isFavorite = favoriteCities.includes(city.id);
                     const weather = MOCK_WEATHER[city.id];
-                    const forecastPreview = weather?.forecast?.slice(0, 4) || [];
                     const metaParts = [];
                     if (weather?.precipitation) {
                         const hasAmount =
@@ -90,26 +90,17 @@ export function Home() {
                                                 <span className="city-condition">
                                                     {weather.icon} {weather.condition}
                                                 </span>
-                                                {metaParts.length > 0 && (
-                                                    <span className="city-meta">
-                                                        {metaParts.join(' · ')}
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <div className="forecast-grid">
-                                                {forecastPreview.map(day => (
-                                                    <div key={day.day} className="forecast-card">
-                                                        <div className="forecast-day">{day.day}</div>
-                                                        <div className="forecast-icon">{day.icon}</div>
-                                                        <div className="forecast-temp">{day.tempC}°C</div>
-                                                        <div className="forecast-condition">{day.condition}</div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
-                            </Link>
+                                            {metaParts.length > 0 && (
+                                                <span className="city-meta">
+                                                    {metaParts.join(' · ')}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <ForecastGrid days={weather?.forecast} limit={4} />
+                                    </>
+                                )}
+                            </div>
+                        </Link>
                             <div className="city-actions">
                                 <button
                                     type="button"
