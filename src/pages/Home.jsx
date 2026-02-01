@@ -1,6 +1,11 @@
 import {useMemo, useReducer, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {selectFavoriteCities, toggleFavorite} from '../slices/favoritesSlice';
+import {
+    selectFavoriteCities,
+    selectFavoritesError,
+    selectFavoritesStatus,
+    toggleFavoriteRemote,
+} from '../slices/favoritesSlice';
 import {CITY_LIST} from '../constants/cities';
 import {MOCK_WEATHER} from '../constants/mockWeather';
 import {ForecastGrid, CityDetailsPanel} from '../components';
@@ -10,6 +15,8 @@ import './Home.css';
 export function Home() {
     const dispatch = useDispatch();
     const favoriteCities = useSelector(selectFavoriteCities);
+    const favoritesStatus = useSelector(selectFavoritesStatus);
+    const favoritesError = useSelector(selectFavoritesError);
     const temperatureUnits = useSelector(state => state.weather.temperatureUnits);
     const [search, setSearch] = useState('');
     const [expandedCityId, toggleExpanded] = useReducer((state, action) => {
@@ -29,16 +36,22 @@ export function Home() {
     }, [search]);
 
     const handleToggleFavorite = cityId => {
-        dispatch(toggleFavorite(cityId));
+        dispatch(toggleFavoriteRemote(cityId));
     };
 
     return (
         <section className="home">
             <h1 className="header">City selection</h1>
             <p className="subheading">
-                Use search to quickly find a city, then tap the star to add or remove. Your picks stay
-                in the browser.
+                Use search to quickly find a city, then tap the star to add or remove. Your picks are
+                stored in the database.
             </p>
+            {favoritesStatus === 'loading' && (
+                <p className="subheading">Syncing favorites with the database...</p>
+            )}
+            {favoritesError && (
+                <p className="subheading">Favorites sync failed: {favoritesError}</p>
+            )}
 
             <div className="search-row">
                 <label className="search-label" htmlFor="city-search">

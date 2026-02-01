@@ -1,45 +1,35 @@
-# Programowanie Front-end (szbalon projektu)
+# Web Weather App
 
-W tym repozytorium znajdziecie szablon projektu, który można wykorzystać przy tworzeniu projektu semestralnego. Zawiera on skonfigurowane podstawowe biblioteki, które mogą być przydatne podczas pracy oraz proponowaną skturkturę katalogów.
+![weathergif](weatherapp.gif)
 
-## Jak uruchomić projekt
+## Instrukcja uruchomienia projektu
 
-W pierwszej kolejności należy użyć narzędzia NVM do wybrania odpowiedniej wersji Node.js:
-```shell
-nvm use
-```
+### Wersja produkcyjna (Docker Compose)
 
-Jeżeli narzędzie zwróci błąd o tym, że obecnie nie jest zainstalowana żądana wersja Node'a, wówczas należy użyć komendy:
-```shell
-nvm install 20.18.0
-nvm use
-```
+1. Zbuduj i uruchom kontenery:
+   ```bash
+   docker compose up --build
+   ```
+2. Aplikacja frontend będzie dostępna pod adresem:
+   `http://localhost:3000`
+3. API działa pod adresem:
+   `http://localhost:8080/api/health`
 
-Następnie należy zainstalować biblioteki wymagane do uruchomienia projektu:
-```shell
-npm install
-```
+### Wersja developerska (lokalnie)
 
-Potem projekt można uruchomić w przeglądarce używając polecenia:
-```shell
-npm start
-```
+1. Uruchom bazę danych i API:
+   ```bash
+   docker compose up db api
+   ```
+2. W osobnym terminalu uruchom frontend:
+   ```bash
+   npm install
+   npm run dev
+   ```
+3. Frontend będzie dostępny pod adresem:
+   `http://localhost:3000`
 
-## Lista zainstalowanych bibliotek
+### CI/CD
 
-* React,
-* React Redux + ReduxJS Toolkit,
-* React Router Dom,
-* Axios,
-* ESLint + Prettier
-
-## Struktura katalogów
-
-* `components` - katalog zawierający pomniejsze komponenty, które mogą zostać wykorzystane do budowy podstron aplikacji,
-* `constants` - zawiera definicje wszystkich stałych, typów wyliczeniowych,
-* `functions` - katalog z funkcjami pomocniczymi,
-* `hooks` - zawiera definicje dedykowanych dla aplikacji hook'ów
-* `services` - katalog zawierający funkcje i klasy odpowiedzialne za np. komunikację z REST API,
-* `slices` - katalog zawierający definicje reducerów (biblioteka Redux).
-
-
+- Pull requesty do `main`: lint + build.
+- Push do `main`: lint + build + budowa i publikacja obrazu do GHCR.

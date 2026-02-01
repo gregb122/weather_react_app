@@ -17,10 +17,6 @@ const loadState = () => {
         const parsed = JSON.parse(stored);
         const preloaded = {};
 
-        if (Array.isArray(parsed?.favorites?.cities)) {
-            preloaded.favorites = {cities: parsed.favorites.cities};
-        }
-
         if (TEMPERATURE_UNITS.isValid(parsed?.weather?.temperatureUnits)) {
             preloaded.weather = {temperatureUnits: parsed.weather.temperatureUnits};
         }
@@ -50,11 +46,11 @@ if (typeof localStorage !== 'undefined') {
             localStorage.setItem(
                 STORAGE_KEY,
                 JSON.stringify({
-                    favorites: {cities: state.favorites?.cities ?? []},
                     weather: {temperatureUnits: state.weather?.temperatureUnits},
                 }),
             );
         } catch {
+            // Ignore storage write failures (private mode, quota, etc.).
         }
     });
 }

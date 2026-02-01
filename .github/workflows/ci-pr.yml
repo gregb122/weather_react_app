@@ -1,0 +1,16 @@
+name: CI (pull requests)
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/reusable-ci.yml
+    with:
+      push_image: false
+      image_name: ghcr.io/${{ github.repository }}
+      node_version: 20.18.0

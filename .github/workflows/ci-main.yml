@@ -1,0 +1,17 @@
+name: CI (main)
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  ci:
+    uses: ./.github/workflows/reusable-ci.yml
+    with:
+      push_image: true
+      image_name: ghcr.io/${{ github.repository }}
+      node_version: 20.18.0

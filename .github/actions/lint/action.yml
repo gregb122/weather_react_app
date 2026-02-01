@@ -1,0 +1,8 @@
+name: Local Linter
+description: Run ESLint for the project
+runs:
+  using: composite
+  steps:
+    - name: Run ESLint
+      run: npm run eslint
+      shell: bash

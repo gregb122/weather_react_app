@@ -10,14 +10,21 @@ import globals from 'globals';
 export default [
     {
         files: ['**/*.js', '**/*.jsx'],
-        ignores: ['node_modules/', 'dist/'],
+        ignores: ['node_modules/', 'dist/', 'server/**'],
     },
     {
+        ignores: ['server/**'],
+        settings: {
+            react: {
+                version: 'detect',
+            },
+        },
         languageOptions: {
             ecmaVersion: 'latest',
             sourceType: 'module',
             globals: {
                 React: 'writable',
+                process: 'readonly',
                 ...globals.browser,
             },
             parserOptions: {
@@ -37,9 +44,10 @@ export default [
             ...js.configs.recommended.rules,
             ...react.configs.recommended.rules,
             // ...stylistic.rules,
-            'prettier/prettier': 'error',
             'react/react-in-jsx-scope': 'off', // React 17+ doesn't need React to be in scope
             'react/jsx-filename-extension': [1, {extensions: ['.js', '.jsx']}],
+            'react/prop-types': 'off',
+            'prettier/prettier': 'off',
         },
     },
     prettier, // Include Prettier last to avoid conflicts

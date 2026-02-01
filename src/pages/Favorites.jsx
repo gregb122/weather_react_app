@@ -1,7 +1,12 @@
 import {useMemo, useReducer} from 'react';
 import {Link} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
-import {selectFavoriteCities, toggleFavorite} from '../slices/favoritesSlice';
+import {
+    selectFavoriteCities,
+    selectFavoritesError,
+    selectFavoritesStatus,
+    toggleFavoriteRemote,
+} from '../slices/favoritesSlice';
 import {CITY_LIST} from '../constants/cities';
 import {MOCK_WEATHER} from '../constants/mockWeather';
 import {CityDetailsPanel, ForecastGrid} from '../components';
@@ -12,6 +17,8 @@ import './Home.css';
 export function Favorites() {
     const dispatch = useDispatch();
     const favoriteCities = useSelector(selectFavoriteCities);
+    const favoritesStatus = useSelector(selectFavoritesStatus);
+    const favoritesError = useSelector(selectFavoritesError);
     const temperatureUnits = useSelector(state => state.weather.temperatureUnits);
     const [expandedCityId, toggleExpanded] = useReducer((state, action) => {
         if (action.type === 'toggle') {
@@ -26,7 +33,7 @@ export function Favorites() {
     );
 
     const handleRemove = cityId => {
-        dispatch(toggleFavorite(cityId));
+        dispatch(toggleFavoriteRemote(cityId));
     };
 
     return (
@@ -37,6 +44,12 @@ export function Favorites() {
                     This list shows only the cities you picked. You can remove them or go back to add
                     more.
                 </p>
+                {favoritesStatus === 'loading' && (
+                    <p className="subheading">Syncing favorites with the database...</p>
+                )}
+                {favoritesError && (
+                    <p className="subheading">Favorites sync failed: {favoritesError}</p>
+                )}
             </div>
 
             {selectedCities.length === 0 ? (
